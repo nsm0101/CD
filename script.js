@@ -113,7 +113,12 @@ function calculateDose() {
     `<p class="result-weight"><span>Patient weight</span><br><strong>${weightKg.toFixed(1)} kg (${weightLbs.toFixed(1)} lbs)</strong></p>`
   );
 
+  // Dosing based on AAP (American Academy of Pediatrics) guidelines
+  // Acetaminophen: 10-15 mg/kg per dose, every 4-6 hours
+  // Ibuprofen: 5-10 mg/kg per dose, every 6-8 hours (not recommended <6 months)
+  
   if (age === '2-6') {
+    // Infants 2-6 months: Conservative dosing approach
     const acetaMgCalculated = 12.5 * weightKg;
     const ACETA_MAX_MG_INFANT = 160;
     const acetaMg = Math.min(acetaMgCalculated, ACETA_MAX_MG_INFANT);
@@ -147,7 +152,79 @@ function calculateDose() {
     );
 
     resultBlocks.push(`<div class="result-group">${group.join('')}</div>`);
-  } else if (age === '6+') {
+  } else if (age === '6-12') {
+    // Children 6 months - 11 years: Standard pediatric dosing
+    // Max doses per AAP/FDA guidelines for children under 12 years
+    const ACETA_MAX_SINGLE_DOSE_MG = 480;
+    const IBU_MAX_SINGLE_DOSE_MG = 400;
+
+    const acetaMgCalculated = 15 * weightKg;
+    const acetaMg = Math.min(acetaMgCalculated, ACETA_MAX_SINGLE_DOSE_MG);
+    const acetaMl = (acetaMg / 160) * 5;
+    const acetaCapped = acetaMg < acetaMgCalculated;
+
+    const ibuMgCalculated = 10 * weightKg;
+    const ibuMg = Math.min(ibuMgCalculated, IBU_MAX_SINGLE_DOSE_MG);
+    const ibuCapped = ibuMg < ibuMgCalculated;
+    const ibuMl50 = (ibuMg / 50) * 1.25;
+    const ibuMl100 = (ibuMg / 100) * 5;
+
+    const group = [];
+
+    group.push(`
+      <article class="result-card">
+        <h3>Acetaminophen (160 mg / 5 mL)</h3>
+        <p>Give ${acetaMl.toFixed(1)} mL (${acetaMg.toFixed(0)} mg) every 6 hours as needed for fever/pain.</p>
+        ${renderWarning(
+          '',
+          'Maximum single dose for this age group is 480 mg of acetaminophen every 6 hours.',
+          'warning-card--orange'
+        )}
+        ${
+          acetaCapped
+            ? renderWarning(
+                'Maximum dose reached',
+                'Weight-based dose was limited to this maximum. Consider discussing dosing with your pediatrician.',
+                'warning-card--orange'
+              )
+            : ''
+        }
+      </article>
+    `);
+
+    group.push(`
+      <article class="result-card">
+        <h3>Ibuprofen (oral)</h3>
+        <p><strong>Children's 100 mg / 5 mL:</strong> Give ${ibuMl100.toFixed(1)} mL (${ibuMg.toFixed(0)} mg) every 6 hours as needed for fever/pain.</p>
+        <p><strong>Infant's 50 mg / 1.25 mL:</strong> Give ${ibuMl50.toFixed(1)} mL (${ibuMg.toFixed(0)} mg) every 6 hours as needed for fever/pain.</p>
+        ${renderWarning(
+          '',
+          'Maximum single dose for this age group is 400 mg of ibuprofen every 6 hours.',
+          'warning-card--orange'
+        )}
+        ${
+          ibuCapped
+            ? renderWarning(
+                'Maximum dose reached',
+                'Weight-based dose was limited to this maximum. Consider discussing dosing with your pediatrician.',
+                'warning-card--orange'
+              )
+            : ''
+        }
+      </article>
+    `);
+
+    group.push(
+      renderWarning(
+        'Dose spacing reminder',
+        `Never exceed ${ACETA_MAX_SINGLE_DOSE_MG} mg of acetaminophen or ${IBU_MAX_SINGLE_DOSE_MG} mg of ibuprofen in a single dose, and allow at least 6 hours between doses.`,
+        'warning-card--teal'
+      )
+    );
+
+    resultBlocks.push(`<div class="result-group">${group.join('')}</div>`);
+  } else if (age === '12+') {
+    // Adolescents 12+ years: Adult dosing guidelines
     const ACETA_MAX_SINGLE_DOSE_MG = 1000;
     const IBU_MAX_SINGLE_DOSE_MG = 800;
 
