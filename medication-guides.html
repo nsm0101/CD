@@ -532,6 +532,90 @@
       gap: 6px;
     }
 
+    .resources-section {
+      display: grid;
+      gap: clamp(20px, 3vw, 28px);
+    }
+
+    .resources-section h2 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2rem);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .resources-section p {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--teal-600);
+    }
+
+    .resources-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(16px, 3vw, 20px);
+    }
+
+    @media (min-width: 640px) {
+      .resources-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+    }
+
+    .resource-link {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px;
+      background: #ffffff;
+      border: 3px solid var(--ink-900);
+      border-radius: 16px;
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.12);
+      text-decoration: none;
+      color: var(--ink-900);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .resource-link:hover,
+    .resource-link:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.18);
+      outline: none;
+    }
+
+    .resource-link:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 0 rgba(15, 44, 42, 0.12);
+    }
+
+    .resource-logo {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .resource-content {
+      flex: 1;
+    }
+
+    .resource-content h3 {
+      margin: 0 0 6px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: var(--teal-600);
+    }
+
+    .resource-content p {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      color: var(--ink-700);
+    }
+
     @media (prefers-color-scheme: dark) {
       :root {
         --footer-bg: #0d1b2a;
@@ -914,6 +998,37 @@
                 <li>Give with food or milk to lessen stomach upset.</li>
               </ul>
             </article>
+          </div>
+        </section>
+
+        <section class="card resources-section" aria-labelledby="resources-heading">
+          <h2 id="resources-heading">Medication Safety Resources</h2>
+          <p>Additional resources to help keep medications safe at home and on the go.</p>
+          
+          <div class="resources-grid">
+            <a href="Upandaway/UpandAway_Tips_Parent_May2023.pdf" class="resource-link" target="_blank" rel="noopener noreferrer">
+              <img src="Upandaway/Upandaway-logo.jpg" alt="Up and Away logo" class="resource-logo">
+              <div class="resource-content">
+                <h3>Parents' Medication Safety Tips</h3>
+                <p>Essential guidance for keeping medications safe and out of reach at home.</p>
+              </div>
+            </a>
+            
+            <a href="Upandaway/UpandAway_Tips_Grandparent_May2023.pdf" class="resource-link" target="_blank" rel="noopener noreferrer">
+              <img src="Upandaway/Upandaway-logo.jpg" alt="Up and Away logo" class="resource-logo">
+              <div class="resource-content">
+                <h3>Grandparents' Medication Safety Tips</h3>
+                <p>Special considerations for grandparents caring for children.</p>
+              </div>
+            </a>
+            
+            <a href="Upandaway/UpandAway_Tips_Travel_May2023.pdf" class="resource-link" target="_blank" rel="noopener noreferrer">
+              <img src="Upandaway/Upandaway-logo.jpg" alt="Up and Away logo" class="resource-logo">
+              <div class="resource-content">
+                <h3>Travel Medication Safety Tips</h3>
+                <p>Keep medications secure while traveling with children.</p>
+              </div>
+            </a>
           </div>
         </section>
       </div>
