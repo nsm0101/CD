@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloseDose Dosing Verification Tests</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 { color: #1f8f7b; }
+    h2 { color: #123a37; margin-top: 30px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background: #1f8f7b;
+      color: white;
+      font-weight: 600;
+    }
+    tr:hover { background: #f5f9f9; }
+    .pass { color: #28a745; font-weight: bold; }
+    .warning { color: #ffc107; font-weight: bold; }
+    .fail { color: #dc3545; font-weight: bold; }
+    .test-case {
+      background: #f8f9fa;
+      padding: 15px;
+      margin: 15px 0;
+      border-left: 4px solid #1f8f7b;
+    }
+    .note {
+      background: #fff3cd;
+      padding: 15px;
+      margin: 15px 0;
+      border-left: 4px solid #ffc107;
+    }
+    .reference {
+      font-size: 0.9em;
+      color: #666;
+      font-style: italic;
+    }
+    button {
+      background: #1f8f7b;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1em;
+      margin: 5px;
+    }
+    button:hover { background: #123a37; }
+    .result { margin-top: 10px; padding: 10px; background: #f8f9fa; }
+  </style>
+</head>
+<body>
+  <h1>CloseDose Dosing Verification Tests</h1>
+  <p class="reference">Verifying against AAP (American Academy of Pediatrics) and FDA dosing guidelines</p>
+
+  <h2>Standard Dosing Guidelines</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Medication</th>
+        <th>Standard Dose</th>
+        <th>Interval</th>
+        <th>Max Single Dose</th>
+        <th>Age Restrictions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Acetaminophen</strong></td>
+        <td>10-15 mg/kg</td>
+        <td>Every 4-6 hours</td>
+        <td>
+          Infants: 160 mg<br>
+          Children 2-11 yrs: 480 mg<br>
+          Adolescents 12+: 1000 mg
+        </td>
+        <td>Consult physician for infants &lt;3 months</td>
+      </tr>
+      <tr>
+        <td><strong>Ibuprofen</strong></td>
+        <td>5-10 mg/kg</td>
+        <td>Every 6-8 hours</td>
+        <td>
+          Children 6mo-11 yrs: 400 mg<br>
+          Adolescents 12+: 800 mg
+        </td>
+        <td>Not recommended for infants &lt;6 months</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Current Calculator Implementation</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Age Group</th>
+        <th>Acetaminophen</th>
+        <th>Ibuprofen</th>
+        <th>Interval</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>2-6 months</strong></td>
+        <td>12.5 mg/kg (max 160 mg)</td>
+        <td>Not recommended</td>
+        <td>Every 4 hours</td>
+        <td><span class="warning">⚠️ Conservative</span></td>
+      </tr>
+      <tr>
+        <td><strong>6+ months</strong></td>
+        <td>15 mg/kg (max 1000 mg)</td>
+        <td>10 mg/kg (max 800 mg)</td>
+        <td>Every 6 hours</td>
+        <td><span class="warning">⚠️ Too broad</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <strong>Key Finding:</strong> The "6+ months" age group applies max doses appropriate for adolescents (1000 mg acetaminophen, 800 mg ibuprofen) to all children 6 months and older, including young children who should have lower max doses (480 mg acetaminophen, 400 mg ibuprofen).
+  </div>
+
+  <h2>Interactive Test Cases</h2>
+  <p>Click the buttons below to calculate doses for different test cases:</p>
+
+  <div class="test-case">
+    <h3>Test Case 1: 4-month-old, 6 kg infant</h3>
+    <button onclick="testCase1()">Calculate</button>
+    <div id="result1" class="result" style="display:none;"></div>
+  </div>
+
+  <div class="test-case">
+    <h3>Test Case 2: 10-month-old, 9 kg infant</h3>
+    <button onclick="testCase2()">Calculate</button>
+    <div id="result2" class="result" style="display:none;"></div>
+  </div>
+
+  <div class="test-case">
+    <h3>Test Case 3: 5-year-old, 18 kg child</h3>
+    <button onclick="testCase3()">Calculate</button>
+    <div id="result3" class="result" style="display:none;"></div>
+  </div>
+
+  <div class="test-case">
+    <h3>Test Case 4: 12-year-old, 50 kg adolescent</h3>
+    <button onclick="testCase4()">Calculate</button>
+    <div id="result4" class="result" style="display:none;"></div>
+  </div>
+
+  <div class="test-case">
+    <h3>Test Case 5: Large adolescent, 80 kg</h3>
+    <button onclick="testCase5()">Calculate</button>
+    <div id="result5" class="result" style="display:none;"></div>
+  </div>
+
+  <h2>Recommendations</h2>
+  <div class="test-case">
+    <h3>Priority 1: Age Group Refinement</h3>
+    <p>Split the "6+ months" category into:</p>
+    <ul>
+      <li><strong>6 months - 2 years:</strong> More conservative approach for toddlers</li>
+      <li><strong>2-11 years:</strong> Standard pediatric dosing (Acetaminophen max 480 mg, Ibuprofen max 400 mg)</li>
+      <li><strong>12+ years:</strong> Adolescent/adult dosing (Acetaminophen max 1000 mg, Ibuprofen max 800 mg)</li>
+    </ul>
+  </div>
+
+  <div class="test-case">
+    <h3>Priority 2: Infant Dosing Consistency</h3>
+    <p>Consider updating the 2-6 month age group acetaminophen dose from 12.5 mg/kg to 15 mg/kg to align with standard guidelines, or document the rationale for the conservative approach.</p>
+  </div>
+
+  <script>
+    // Current calculator logic from script.js
+    function calculateCurrentDose(weightKg, ageGroup) {
+      const results = {
+        weightKg: weightKg,
+        ageGroup: ageGroup,
+        acetaminophen: {},
+        ibuprofen: {}
+      };
+
+      if (ageGroup === '2-6') {
+        // Infant (2-6 months)
+        const acetaMgCalculated = 12.5 * weightKg;
+        const ACETA_MAX_MG_INFANT = 160;
+        results.acetaminophen = {
+          calculated: acetaMgCalculated,
+          dose: Math.min(acetaMgCalculated, ACETA_MAX_MG_INFANT),
+          maxDose: ACETA_MAX_MG_INFANT,
+          interval: '4 hours',
+          capped: acetaMgCalculated > ACETA_MAX_MG_INFANT
+        };
+        results.ibuprofen = {
+          recommended: false,
+          message: 'Not recommended for infants under 6 months'
+        };
+      } else if (ageGroup === '6+') {
+        // 6+ months
+        const ACETA_MAX_SINGLE_DOSE_MG = 1000;
+        const IBU_MAX_SINGLE_DOSE_MG = 800;
+
+        const acetaMgCalculated = 15 * weightKg;
+        results.acetaminophen = {
+          calculated: acetaMgCalculated,
+          dose: Math.min(acetaMgCalculated, ACETA_MAX_SINGLE_DOSE_MG),
+          maxDose: ACETA_MAX_SINGLE_DOSE_MG,
+          interval: '6 hours',
+          capped: acetaMgCalculated > ACETA_MAX_SINGLE_DOSE_MG
+        };
+
+        const ibuMgCalculated = 10 * weightKg;
+        results.ibuprofen = {
+          recommended: true,
+          calculated: ibuMgCalculated,
+          dose: Math.min(ibuMgCalculated, IBU_MAX_SINGLE_DOSE_MG),
+          maxDose: IBU_MAX_SINGLE_DOSE_MG,
+          interval: '6 hours',
+          capped: ibuMgCalculated > IBU_MAX_SINGLE_DOSE_MG
+        };
+      }
+
+      return results;
+    }
+
+    function displayResult(testNum, weightKg, ageGroup, ageText, expectedNotes) {
+      const result = calculateCurrentDose(weightKg, ageGroup);
+      const resultDiv = document.getElementById(`result${testNum}`);
+      
+      let html = `<h4>Current Calculator Output:</h4>`;
+      html += `<p><strong>Weight:</strong> ${weightKg} kg</p>`;
+      html += `<p><strong>Age Group Used:</strong> ${ageGroup === '2-6' ? '2-6 months' : '6+ months'}</p>`;
+      
+      html += `<h5>Acetaminophen:</h5>`;
+      html += `<ul>`;
+      html += `<li>Calculated: ${result.acetaminophen.calculated.toFixed(1)} mg (${(result.acetaminophen.calculated / weightKg).toFixed(1)} mg/kg)</li>`;
+      html += `<li>Final dose: ${result.acetaminophen.dose.toFixed(0)} mg</li>`;
+      html += `<li>Volume: ${((result.acetaminophen.dose / 160) * 5).toFixed(1)} mL (160 mg/5 mL concentration)</li>`;
+      html += `<li>Interval: Every ${result.acetaminophen.interval}</li>`;
+      html += `<li>Max single dose: ${result.acetaminophen.maxDose} mg</li>`;
+      if (result.acetaminophen.capped) {
+        html += `<li class="warning">⚠️ Dose was capped at maximum</li>`;
+      }
+      html += `</ul>`;
+      
+      if (result.ibuprofen.recommended) {
+        html += `<h5>Ibuprofen:</h5>`;
+        html += `<ul>`;
+        html += `<li>Calculated: ${result.ibuprofen.calculated.toFixed(1)} mg (${(result.ibuprofen.calculated / weightKg).toFixed(1)} mg/kg)</li>`;
+        html += `<li>Final dose: ${result.ibuprofen.dose.toFixed(0)} mg</li>`;
+        html += `<li>Volume (infant drops): ${((result.ibuprofen.dose / 50) * 1.25).toFixed(1)} mL (50 mg/1.25 mL)</li>`;
+        html += `<li>Volume (children's): ${((result.ibuprofen.dose / 100) * 5).toFixed(1)} mL (100 mg/5 mL)</li>`;
+        html += `<li>Interval: Every ${result.ibuprofen.interval}</li>`;
+        html += `<li>Max single dose: ${result.ibuprofen.maxDose} mg</li>`;
+        if (result.ibuprofen.capped) {
+          html += `<li class="warning">⚠️ Dose was capped at maximum</li>`;
+        }
+        html += `</ul>`;
+      } else {
+        html += `<h5>Ibuprofen:</h5>`;
+        html += `<p class="pass">✓ ${result.ibuprofen.message}</p>`;
+      }
+      
+      html += `<h4>Expected per AAP/FDA Guidelines:</h4>`;
+      html += expectedNotes;
+      
+      resultDiv.innerHTML = html;
+      resultDiv.style.display = 'block';
+    }
+
+    function testCase1() {
+      const notes = `
+        <p><strong>For a 4-month-old, 6 kg infant:</strong></p>
+        <ul>
+          <li>Acetaminophen: 60-90 mg (10-15 mg/kg), typically capped at 80-160 mg for infants</li>
+          <li>Ibuprofen: Not recommended</li>
+        </ul>
+        <p class="warning">⚠️ Current calculator uses 12.5 mg/kg which is below the 10-15 mg/kg standard range. This is conservative and safe.</p>
+      `;
+      displayResult(1, 6, '2-6', '4 months', notes);
+    }
+
+    function testCase2() {
+      const notes = `
+        <p><strong>For a 10-month-old, 9 kg infant:</strong></p>
+        <ul>
+          <li>Acetaminophen: 90-135 mg (10-15 mg/kg), can go up to 160 mg for this age</li>
+          <li>Ibuprofen: 45-90 mg (5-10 mg/kg), max 400 mg for children under 12</li>
+        </ul>
+        <p class="pass">✓ Dosing appears appropriate for this weight/age.</p>
+      `;
+      displayResult(2, 9, '6+', '10 months', notes);
+    }
+
+    function testCase3() {
+      const notes = `
+        <p><strong>For a 5-year-old, 18 kg child:</strong></p>
+        <ul>
+          <li>Acetaminophen: 180-270 mg (10-15 mg/kg), max 480 mg for children 2-11 years</li>
+          <li>Ibuprofen: 90-180 mg (5-10 mg/kg), max 400 mg for children under 12</li>
+        </ul>
+        <p class="pass">✓ Weight-based doses are under the age-appropriate maximums.</p>
+        <p class="warning">⚠️ However, the calculator uses max caps of 1000 mg (acetaminophen) and 800 mg (ibuprofen) which are too high for this age group.</p>
+      `;
+      displayResult(3, 18, '6+', '5 years', notes);
+    }
+
+    function testCase4() {
+      const notes = `
+        <p><strong>For a 12-year-old, 50 kg adolescent:</strong></p>
+        <ul>
+          <li>Acetaminophen: 500-750 mg (10-15 mg/kg), max 1000 mg for adolescents</li>
+          <li>Ibuprofen: 250-500 mg (5-10 mg/kg), max 800 mg for adolescents</li>
+        </ul>
+        <p class="pass">✓ Dosing is appropriate. Max dose caps are correct for this age group.</p>
+      `;
+      displayResult(4, 50, '6+', '12 years', notes);
+    }
+
+    function testCase5() {
+      const notes = `
+        <p><strong>For a large adolescent, 80 kg:</strong></p>
+        <ul>
+          <li>Acetaminophen: Weight-based would be 1200 mg, but should cap at 1000 mg</li>
+          <li>Ibuprofen: Weight-based would be 800 mg (exactly at maximum)</li>
+        </ul>
+        <p class="pass">✓ Doses are correctly capped at maximum safe levels.</p>
+      `;
+      displayResult(5, 80, '6+', 'large adolescent', notes);
+    }
+  </script>
+</body>
+</html>
