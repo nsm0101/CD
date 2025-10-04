@@ -9,3 +9,5 @@ The site supports both dark and light modes using the CSS prefers-color-scheme m
 ## Logo Files and License
 
 This repository contains several CloseDose logo files in SVG and PNG formats. The logos are the intellectual property of Nickolas Mancini, MD, MBA and are provided solely for use with the CloseDose project. Redistribution or modification of the logo assets is prohibited without express permission. Please see LOGO_LICENSE.md for the full license.
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D1D71M8JMY)
