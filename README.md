@@ -1,13 +1,39 @@
-# CloseDose
+# CD is superseded by CloseDose
 
-CloseDose is a simple front-end prototype for a pediatric medication dosing calculator. It is built with plain HTML, CSS and JavaScript and is hosted via GitHub Pages. The project uses a responsive layout and adapts to your device's preferred color scheme.
+> **This repository is no longer developed.** The parent-facing CloseDose site
+> now lives in [`nsm0101/CloseDose`](https://github.com/nsm0101/CloseDose) under
+> [`public/`](https://github.com/nsm0101/CloseDose/tree/main/public) and is
+> served at <https://closedose.com/>.
 
-## Dark & Light Modes
+This repository held an earlier iteration of the parent-facing site. Everything
+still maintained has a successor in the main repository:
 
-The site supports both dark and light modes using the CSS prefers-color-scheme media query. Dark mode uses a dark teal background with a white logo, while light mode uses a teal background and dark logo. You can find the assets in the images/ directory. If you wish to swap in different colors or images, update the relevant variables in style.css.
+| Here | Now |
+| --- | --- |
+| `index.html` and the dosing calculator | [`public/index.html`](https://github.com/nsm0101/CloseDose/blob/main/public/index.html) with [`public/widget/close-dose-calculator.js`](https://github.com/nsm0101/CloseDose/blob/main/public/widget/close-dose-calculator.js) |
+| `index-es.html`, `index-fr.html`, `index-pt.html` | Runtime translation via [`public/i18n.mjs`](https://github.com/nsm0101/CloseDose/blob/main/public/i18n.mjs) and `public/i18n/` |
+| `about.html`, `contact.html`, `donations.html` | The matching pages under `public/` |
+| `Ibuprofen/`, `Donations/`, `PoisonHelp/`, `Upandaway/` | `public/Ibuprofen/`, `public/Donations/`, and related asset directories |
+| `dosing-verification.md`, `IMPLEMENTATION-SUMMARY.md` | Superseded, see below |
+
+## Dosing verification
+
+The AAP/FDA age-band correction documented in `IMPLEMENTATION-SUMMARY.md` is
+carried forward. The current calculator splits pediatric and adolescent dosing
+the same way, and applies a tighter adolescent ibuprofen ceiling of 600 mg
+rather than the 800 mg recorded here. Nothing in that work is lost by retiring
+this repository.
+
+## Where to make changes
+
+Open pull requests against `nsm0101/CloseDose`. Changes made here will not reach
+production and will not be merged back.
+
+This repository is kept read-only for history and can be archived.
 
 ## Logo Files and License
 
-This repository contains several CloseDose logo files in SVG and PNG formats. The logos are the intellectual property of Nickolas Mancini, MD, MBA and are provided solely for use with the CloseDose project. Redistribution or modification of the logo assets is prohibited without express permission. Please see LOGO_LICENSE.md for the full license.
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D1D71M8JMY)
+The CloseDose logo files in this repository are the intellectual property of
+Nickolas Mancini, MD, MBA and are provided solely for use with the CloseDose
+project. Redistribution or modification of the logo assets is prohibited without
+express permission. See LOGO_LICENSE.md for the full license.
